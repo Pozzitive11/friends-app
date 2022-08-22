@@ -78,49 +78,49 @@ const compareByGender = (friend, type) => friend.gender === type;
 function filterUsers(arr) {
   let newFriendsArr = [...arr];
   form.addEventListener("input", ({ target }) => {
-    // switch (target.value) {
-    //   case "name-down":
-    //     newFriendsArr.sort((a, b) => compareByName(a, b));
-    //     break;
-    //   case "name-up":
-    //     newFriendsArr.sort((a, b) => compareByName(b, a));
-    //     break;
-    //   case "age-down":
-    //     newFriendsArr.sort((a, b) => compareByAge(a, b));
-    //     break;
-    //   case "age-up":
-    //     newFriendsArr.sort((a, b) => compareByAge(b, a));
-    //     break;
-    //   case "male":
-    //     newFriendsArr = arr.filter((friend) => compareByGender(friend, "male"));
-    //     break;
-    //   case "female":
-    //     newFriendsArr = arr.filter((friend) =>
-    //       compareByGender(friend, "female")
-    //     );
-    //     console.log(newFriendsArr);
-    //     break;
-    //   case "all":
-    //     newFriendsArr = arr;
-    //     break;
-    // }
+    switch (target.value) {
+      case "name-down":
+        newFriendsArr.sort((a, b) => compareByName(a, b));
+        break;
+      case "name-up":
+        newFriendsArr.sort((a, b) => compareByName(b, a));
+        break;
+      case "age-down":
+        newFriendsArr.sort((a, b) => compareByAge(a, b));
+        break;
+      case "age-up":
+        newFriendsArr.sort((a, b) => compareByAge(b, a));
+        break;
+      case "male":
+        newFriendsArr = arr.filter((friend) => compareByGender(friend, "male"));
+        break;
+      case "female":
+        newFriendsArr = arr.filter((friend) =>
+          compareByGender(friend, "female")
+        );
+        console.log(newFriendsArr);
+        break;
+      case "all":
+        newFriendsArr = arr;
+        break;
+    }
 
-    // if (target.name === "name" && target.value.length > 0) {
-    //   newFriendsArr = arr.filter((friend) => {
-    //     const fullName = `${friend.name.first} ${friend.name.last}`;
-    //     if (fullName.toLowerCase().includes(target.value)) {
-    //       return (newFriendsArr = [...newFriendsArr]);
-    //     }
-    //   });
-    // } else {
-    //   newFriendsArr =  arr;
-    // }
+    if (target.name === "name" && target.value.length > 0) {
+      newFriendsArr = arr.filter((friend) => {
+        const fullName = `${friend.name.first} ${friend.name.last}`;
+        if (fullName.toLowerCase().includes(target.value)) {
+          return (newFriendsArr = [...newFriendsArr]);
+        }
+      });
+    } else {
+      newFriendsArr =  arr;
+    }
 
     
-    sortByAge(target.value, newFriendsArr);
-    sortByName(target.value, newFriendsArr);
-    sortByGender(target.value, newFriendsArr, arr);
-    filterBySearch(target, newFriendsArr, arr);
+    // sortByAge(target.value, newFriendsArr);
+    // sortByName(target.value, newFriendsArr);
+    // sortByGender(target.value, newFriendsArr, arr);
+    // filterBySearch(target, newFriendsArr, arr);
 
     cardList.innerHTML = "";
     renderCard(newFriendsArr);
