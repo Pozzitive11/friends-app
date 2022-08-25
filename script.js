@@ -30,7 +30,6 @@ getUsers(
     users = data.results;
     renderCard(users);
     filterUsers(users);
-    resetCards(users);
   })
   .catch(() => showError());
 
@@ -85,32 +84,31 @@ const compareByGender = (friend, type) => friend.gender === type;
 
 /////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
+let newFriendsArr = [];
 function filterUsers(arr) {
-  let newFriendsArr = [...arr];
-  form.addEventListener("input", ({target}) => {
+  newFriendsArr = [...arr];
+  form.addEventListener("input", ({ target }) => {
     switch (target.value) {
       case "name-down":
-        // працюю з копією масиву
         newFriendsArr.sort((a, b) => compareByName(a, b));
         break;
       case "name-up":
-        // працюю з копією масиву
         newFriendsArr.sort((a, b) => compareByName(b, a));
         break;
       case "age-down":
-        // працюю з копією масиву
         newFriendsArr.sort((a, b) => compareByAge(a, b));
         break;
       case "age-up":
-        // працюю з копією масиву
         newFriendsArr.sort((a, b) => compareByAge(b, a));
         break;
       case "male":
-        // копія масиву = вхідний масив через це не фільтруються значення інпуту
-        newFriendsArr = arr.filter((friend) => compareByGender(friend, "male"));
+        // Повиноо брати значення не з відсортованого масиву,а з початкового
+        newFriendsArr = newFriendsArr.filter((friend) =>
+          compareByGender(friend, "male")
+        );
         break;
       case "female":
-        // копія масиву = вхідний масив через це не фільтруються значення інпуту
+        // Повиноо брати значення не з відсортованого масиву,а з початкового
         newFriendsArr = arr.filter((friend) =>
           compareByGender(friend, "female")
         );
@@ -121,18 +119,19 @@ function filterUsers(arr) {
     }
 
     if (target.name === "name") {
+      // не повертає усі картки при пустому інпуті
       newFriendsArr = arr.filter((friend) => {
         const fullName = `${friend.name.first} ${friend.name.last}`;
-        if (fullName.toLowerCase().includes(target.value)) {
-          return (newFriendsArr = [...newFriendsArr]);
-        }
+        return fullName.toLowerCase().includes(target.value.toLowerCase());
       });
     }
 
-    // sortByGender(target.value, newFriendsArr, arr);
+    // sortByGender(target.value);
     // sortByAge(target.value, newFriendsArr);
     // sortByName(target.value, newFriendsArr);
-    // filterBySearch(target, newFriendsArr, arr);
+    // filterBySearch(target, arr);
+    resetFilters(arr);
+    console.log(newFriendsArr);
 
     cardList.innerHTML = "";
     renderCard(newFriendsArr);
@@ -161,42 +160,40 @@ function sortByName(target, arr) {
   }
 }
 
-function sortByGender(target, newArray, arr) {
+function sortByGender(target) {
   switch (target) {
     case "male":
-      newArray = arr.filter((friend) => compareByGender(friend, "male"));
-      console.log(newArray);
+      newFriendsArr = newFriendsArr.filter((friend) =>
+        compareByGender(friend, "male")
+      );
       break;
     case "female":
-      newArray = arr.filter((friend) => compareByGender(friend, "female"));
-      console.log(newArray);
+      newFriendsArr = newFriendsArr.filter((friend) =>
+        compareByGender(friend, "female")
+      );
       break;
     case "all":
-      newArray = arr;
-      console.log(newArray);
+      newFriendsArr = users;
       break;
   }
 }
 
-function filterBySearch(target, newArray, arr) {
-  if (target.name === "name" && target.value.length > 0) {
-    newArray = arr.filter((friend) => {
-      const fullName = `${friend.name.first} ${friend.name.last}`;
-      if (fullName.toLowerCase().includes(target.value)) {
-        return (newArray = [...newArray]);
-      }
+function filterBySearch(target, arr) {
+  if (target.name === "name") {
+    newFriendsArr = arr.filter((friend) => {
+      let friendFullName = friend.name.first + " " + friend.name.last;
+      friendFullName = friendFullName.toLowerCase();
+      let tempTarget = target.value.toLowerCase();
+      if (friendFullName.indexOf(tempTarget) >= 0) return true;
     });
   }
 }
 
-function resetCards(arr) {
+function resetFilters(arr) {
   document.querySelector(".form__button").addEventListener("click", () => {
-    let newFriendsArr = [...arr];
+    newFriendsArr = [...arr];
     cardList.innerHTML = "";
     renderCard(newFriendsArr);
   });
 }
-
-
-// При інпут + гендер фільтруються не дані з інпуту а усі картки
 
