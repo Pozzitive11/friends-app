@@ -1,293 +1,185 @@
-// const form = document.querySelector("#form");
-// const cardList = document.querySelector(".cards__list");
+let users = [];
+const cardList = document.querySelector(".users__list");
 
-// let users = [];
+const sortAge = document.querySelector(".sort-age");
+const sortName = document.querySelector(".sort-name");
+const filterGender = document.querySelector(".sort-gender");
 
-// async function getUsers(url) {
-//   let res = await fetch(url);
+const searchInput = document.querySelector("#search-input");
+const resetBtn = document.querySelector(".form__button");
 
-//   if (!res.ok) {
-//     cardList.innerHTML = `Could not fetch ${url}, status: ${res.status}`;
+const burgerBtn = document.querySelector(".burger");
+const sidebar = document.querySelector(".sidebar");
+const wrapper = document.querySelector(".wrapper");
+
+function closeModal() {
+  modal.classList.add("hide");
+  modal.classList.remove("show");
+  // document.body.style.overflow = "";
+}
+
+function openModal() {
+  modal.classList.add("show");
+  modal.classList.remove("hide");
+  // document.body.style.overflow = "hidden";
+}
+
+burgerBtn.addEventListener("click", (e) => {
+  burgerBtn.classList.toggle("active");
+  sidebar.classList.toggle("sidebar--visible");
+
+  // if (e.target === wrapper) {
+  //   burgerBtn.classList.toggle("active");
+  //   // sidebar.classList.toggle("sidebar--visible");
+  // }
+});
+
+// wrapper.addEventListener("click", (e) => {
+//   if (e.target === wrapper) {
+//     console.log(123);
+//     closeModal();
 //   }
-//   return await res.json();
-// }
+// });
 
-// // fetch(
-// //   "https://randomuser.me/api/?results=20&nat=us,ua,de&inc=picture,name,dob,gender"
-// // )
-// //   .then((response) => response.json())
-// //   .then((data) => {
-// //     users = data.results;
-// //     renderCard(users);
-// //     filterUsers(users);
-// //   })
-// //   .catch(() => showError());
+const message = {
+  loading: "img/spinner.svg",
+  failure: "Technical problems, try again later :(",
+};
 
-// getUsers(
-//   "https://randomuser.me/api/?results=20&nat=us,ua,de&inc=picture,name,dob,gender"
-// )
-//   .then((data) => {
-//     users = data.results;
-//     renderCard(users);
-//     filterUsers(users);
-//   })
-//   .catch(() => showError());
+let loadingMessage = document.createElement("img");
+function loadingStatus() {
+  loadingMessage.src = message.loading;
+  loadingMessage.classList.add("status-block");
 
-// function showError() {
-//   const element = document.createElement("div");
-//   element.classList.add("error-block");
-//   element.innerHTML = "Sorry for any technical problems, try again later";
+  cardList.insertAdjacentElement("afterend", loadingMessage);
+}
 
-//   cardList.append(element);
-// }
+function loadUsersData() {
+  loadingStatus();
+  
+  fetch(
+    "https://randomuser.me/api/?results=20&nat=us,ua,de&inc=picture,name,dob,gender,location"
+  )
+    .then((response) => {
+      if (response.ok) return response.json();
+    })
+    .then((responseJson) => {
+      users = responseJson.results;
+      showCards(users);
+      loadingMessage.remove();
+    })
+    .catch(() => showError());
+}
 
-// function renderCard(arr) {
-//   arr.forEach(({ picture, name, dob, gender }) => {
-//     createCard({ picture, name, dob, gender });
-//   });
-// }
+function showError() {
+  const errorMessage = document.createElement("div");
+  errorMessage.classList.add("error-block");
+  errorMessage.innerHTML = `${message.failure}`;
+  
+  console.log(message.failure);
+  cardList.append(errorMessage);
+}
 
-// function createCard({ picture, name, dob, gender }) {
-//   const element = document.createElement("li");
-//   element.classList.add("card__item");
+function showCards(arr) {
+  arr.forEach(({ picture, name, dob, gender, location }) => {
+    createCard({ picture, name, dob, gender, location });
+  });
+}
 
-//   element.innerHTML = `
-//     <img class="card__img" src="${picture.large}" alt="User photo" />
-//     <h3 class="card__name">${name.first} ${name.last}</h3>
-//     <h4 class="card__age">Age: <span class="age__span">${dob.age}</span></h4>`;
+function createCard({ picture, name, dob, gender, location }) {
+  const userCard = document.createElement("li");
+  userCard.classList.add("user__item");
 
-//   addGenderHeader(gender, element);
-//   cardList.append(element);
-// }
-// /////////////////////////////////////////////////////////////////
-// /////////////////////////////////////////////////////////////////
+  userCard.innerHTML = `
+    <img class="user__img" src="${picture.large}" alt="User photo" />
+    <p class="user__name">${name.first} ${name.last}</p>
+    <p class="user__age">Age: <span class="user__age-span">${dob.age}</span></p>
+    <p class="user__location">${location.country}</p>`;
 
-// function addGenderHeader(gender, element) {
-//   const friendGender = document.createElement("div");
-//   if (gender === "male") {
-//     friendGender.innerHTML = `<h4 class="card__gender card__gender--male">${gender}</h4>`;
-//   } else {
-//     friendGender.innerHTML = `<h4 class="card__gender card__gender--female">${gender}</h4>`;
-//   }
+  addGenderHeader(gender, userCard);
+  cardList.append(userCard);
+}
 
-//   console.log(element);
-//   element.prepend(friendGender);
-// }
-
-// /////////////////////////////////////////////////////////////////
-// /////////////////////////////////////////////////////////////////
-
-// const compareByName = (a, b) =>
-//   a.name.first.toLowerCase() <= b.name.first.toLowerCase() ? -1 : 1;
-// const compareByAge = (a, b) => a.dob.age - b.dob.age;
-
-// const compareByGender = (friend, type) => friend.gender === type;
-
-// /////////////////////////////////////////////////////////////////
-// /////////////////////////////////////////////////////////////////
-// let newFriendsArr = [];
-// function filterUsers(arr) {
-//   newFriendsArr = [...arr];
-//   form.addEventListener("input", ({ target }) => {
-//     switch (target.value) {
-//       case "name-down":
-//         newFriendsArr.sort((a, b) => compareByName(a, b));
-//         break;
-//       case "name-up":
-//         newFriendsArr.sort((a, b) => compareByName(b, a));
-//         break;
-//       case "age-down":
-//         newFriendsArr.sort((a, b) => compareByAge(a, b));
-//         break;
-//       case "age-up":
-//         newFriendsArr.sort((a, b) => compareByAge(b, a));
-//         break;
-//       case "male":
-//         // Повиноо брати значення не з відсортованого масиву,а з початкового
-//         newFriendsArr = newFriendsArr.filter((friend) =>
-//           compareByGender(friend, "male")
-//         );
-//         break;
-//       case "female":
-//         // Повиноо брати значення не з відсортованого масиву,а з початкового
-//         newFriendsArr = arr.filter((friend) =>
-//           compareByGender(friend, "female")
-//         );
-//         break;
-//       case "all":
-//         newFriendsArr = arr;
-//         break;
-//     }
-
-//     if (target.name === "name") {
-//       // не повертає усі картки при пустому інпуті
-//       newFriendsArr = arr.filter((friend) => {
-//         const fullName = `${friend.name.first} ${friend.name.last}`;
-//         return fullName.toLowerCase().includes(target.value.toLowerCase());
-//       });
-//     }
-
-//     // sortByGender(target.value);
-//     // sortByAge(target.value, newFriendsArr);
-//     // sortByName(target.value, newFriendsArr);
-//     // filterBySearch(target, arr);
-//     resetFilters(arr);
-//     console.log(newFriendsArr);
-
-//     cardList.innerHTML = "";
-//     renderCard(newFriendsArr);
-//   });
-// }
-
-// function sortByAge(target, arr) {
-//   switch (target) {
-//     case "age-down":
-//       arr.sort((a, b) => compareByAge(a, b));
-//       break;
-//     case "age-up":
-//       arr.sort((a, b) => compareByAge(b, a));
-//       break;
-//   }
-// }
-
-// function sortByName(target, arr) {
-//   switch (target) {
-//     case "name-down":
-//       arr.sort((a, b) => compareByName(a, b));
-//       break;
-//     case "name-up":
-//       arr.sort((a, b) => compareByName(b, a));
-//       break;
-//   }
-// }
-
-// function sortByGender(target) {
-//   switch (target) {
-//     case "male":
-//       newFriendsArr = newFriendsArr.filter((friend) =>
-//         compareByGender(friend, "male")
-//       );
-//       break;
-//     case "female":
-//       newFriendsArr = newFriendsArr.filter((friend) =>
-//         compareByGender(friend, "female")
-//       );
-//       break;
-//     case "all":
-//       newFriendsArr = users;
-//       break;
-//   }
-// }
-
-// function filterBySearch(target, arr) {
-//   if (target.name === "name") {
-//     newFriendsArr = arr.filter((friend) => {
-//       let friendFullName = friend.name.first + " " + friend.name.last;
-//       friendFullName = friendFullName.toLowerCase();
-//       let tempTarget = target.value.toLowerCase();
-//       if (friendFullName.indexOf(tempTarget) >= 0) return true;
-//     });
-//   }
-// }
-
-// function resetFilters(arr) {
-//   document.querySelector(".form__button").addEventListener("click", () => {
-//     newFriendsArr = [...arr];
-//     cardList.innerHTML = "";
-//     renderCard(newFriendsArr);
-//   });
-// }
-
-
-function filteredUsers({ target }) {
-  let filteredArr = [...users];
-
-  console.log(target.value);
-  // console.log(target.closest('input[value="age-down"]'));
-
-  if (target.value === "age-up") {
-    filteredArr.sort((a, b) => compareByAge(b, a));
-  } else if (target.value === "age-down") {
-    filteredArr.sort((a, b) => compareByAge(a, b));
+function addGenderHeader(gender, element) {
+  const friendGender = document.createElement("div");
+  if (gender === "male") {
+    friendGender.innerHTML = `<h4 class="user__gender user__gender--male">${gender}</h4>`;
+  } else {
+    friendGender.innerHTML = `<h4 class="user__gender user__gender--female">${gender}</h4>`;
   }
+  element.prepend(friendGender);
+}
 
-  if (target.value === "name-up") {
-    filteredArr.sort((a, b) => compareByName(b, a));
-  } else if (target.value === "name-down") {
-    filteredArr.sort((a, b) => compareByName(a, b));
-  }
+/////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+const compareByName = (a, b) =>
+  a.name.first.toLowerCase() <= b.name.first.toLowerCase() ? -1 : 1;
+const compareByAge = (a, b) => a.dob.age - b.dob.age;
 
-  if (target.value === "male") {
-    filteredArr = filteredArr.filter((friend) =>
-      compareByGender(friend, "male")
-    );
-  } else if (target.value === "female") {
-    filteredArr = filteredArr.filter((friend) =>
-      compareByGender(friend, "female")
-    );
-  } else if (target.value === "all") {
-    filteredArr;
-  }
+const compareByGender = (friend, type) => friend.gender === type;
 
+/////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+function filterBySearch(arr, target) {
+  return arr.filter((friend) => {
+    const fullName = `${friend.name.first} ${friend.name.last}`;
+    return fullName.toLowerCase().includes(target.toLowerCase());
+  });
+}
+/////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////
+function filterUsers({ target }) {
+  let resultUsers = [...users];
   if (searchInput.value !== "") {
-    filteredArr = filterBySearch(filteredArr, searchInput.value);
+    resultUsers = filterBySearch(resultUsers, searchInput.value);
+  }
+
+  if (target.checked) {
+    switch (form.gender.value) {
+      case "male":
+        resultUsers = resultUsers.filter((friend) =>
+          compareByGender(friend, "male")
+        );
+        break;
+      case "female":
+        resultUsers = resultUsers.filter((friend) =>
+          compareByGender(friend, "female")
+        );
+        break;
+      case "all":
+        resultUsers;
+        break;
+    }
+
+    if (target.value === "age-up") {
+      resultUsers.sort((a, b) => compareByAge(b, a));
+    } else if (target.value === "age-down") {
+      resultUsers.sort((a, b) => compareByAge(a, b));
+    }
+
+    if (target.value === "name-up") {
+      resultUsers.sort((a, b) => compareByName(b, a));
+    } else if (target.value === "name-down") {
+      resultUsers.sort((a, b) => compareByName(a, b));
+    }
   }
 
   cardList.innerHTML = "";
-  renderCards(filteredArr);
+  showCards(resultUsers);
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function filteredUsers({ target }) {
-  let filteredArr = [...users];
-
-  if (searchInput.value !== "") {
-    filteredArr = filterBySearch(filteredArr, searchInput.value);
-  }
-  if (filterMale.checked) {
-    filteredArr = filteredArr.filter((friend) =>
-      compareByGender(friend, "male")
-    );
-  }
-  if (filterFemale.checked) {
-    filteredArr = filteredArr.filter((friend) =>
-      compareByGender(friend, "female")
-    );
-  }
-  if (nameUp.checked) {
-    filteredArr.sort((a, b) => compareByName(b, a));
-  }
-  if (nameDown.checked) {
-    filteredArr.sort((a, b) => compareByName(a, b));
-  }
-  if (ageUp.checked) {
-    filteredArr.sort((a, b) => compareByAge(b, a));
-  }
-  if (ageDown.checked) {
-    filteredArr.sort((a, b) => compareByAge(a, b));
-  }
-
+function resetFilters() {
+  resultUsers = [...users];
   cardList.innerHTML = "";
-  renderCards(filteredArr);
+  showCards(resultUsers);
 }
+
+document.addEventListener("DOMContentLoaded", function () {
+  loadUsersData();
+
+  sortName.addEventListener("click", filterUsers);
+  sortAge.addEventListener("click", filterUsers);
+  filterGender.addEventListener("click", filterUsers);
+  searchInput.addEventListener("input", filterUsers);
+  resetBtn.addEventListener("click", resetFilters);
+});

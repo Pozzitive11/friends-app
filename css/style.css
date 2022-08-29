@@ -1,3 +1,12 @@
+/* легший фіолетовий хедер 
+зрозуміліший інпут 
+змінити гендер
+змінити коректність сайдбару (розмір заголовків, розмір відступів)
+змінити інпут(без прколюх з неймом)
+додати зрозумідий плейсхолдер
+розмір шрифтів у хедері
+змінити колір хедеру та йсайдбару
+у адаптиві далі відсунути кнопку, додати фон */
 * {
   margin: 0;
   padding: 0;
@@ -12,6 +21,14 @@ body {
 
 body {
   font-family: "DynaPuff", cursive;
+}
+
+.hide {
+  display: none;
+}
+
+.show {
+  display: block;
 }
 
 .site-container {
@@ -47,6 +64,11 @@ body {
 .error-block {
   font-size: 40px;
   grid-column: 12 span;
+}
+
+.status-block{
+  margin: 0 auto;
+  display: block;
 }
 
 /* Header */
@@ -97,6 +119,7 @@ body {
   margin-right: 30px;
   height: 630px;
   grid-column: 3 span;
+  color: #000;
 }
 
 /* Form */
@@ -165,6 +188,7 @@ body {
 }
 
 .user__item {
+  padding: 0 0 10px;
   margin: 0 auto;
   font-size: 20px;
   background-color: #99c4c8;
@@ -172,7 +196,7 @@ body {
   box-shadow: 0px 10px 20px -10px rgba(0, 0, 0, 0.75);
   color: #b3b8cd;
   text-align: center;
-  width: 216px;
+  width: 100%;
   color: #000;
 }
 
@@ -324,34 +348,34 @@ body {
   background-color: #000;
 }
 
-.burger__line:not(:last-child){
+.burger__line:not(:last-child) {
   margin-bottom: 7px;
 }
 
 .burger,
-.burger__line{
-  transition: all .3s ease-in-out;
+.burger__line {
+  transition: all 0.3s ease-in-out;
 }
 
-.burger.active{
+.burger.active {
   transition-delay: 0.8s;
   transform: rotate(45deg);
 }
 
-.burger.active > .burger__line:nth-child(2){
+.burger.active > .burger__line:nth-child(2) {
   width: 0;
 }
 
 .burger.active > .burger__line:nth-child(1),
-.burger.active > .burger__line:nth-child(3){
-  transition-delay: .4s;
+.burger.active > .burger__line:nth-child(3) {
+  transition-delay: 0.4s;
 }
 
-.burger.active > .burger__line:nth-child(1){
+.burger.active > .burger__line:nth-child(1) {
   transform: translateY(9px);
 }
 
-.burger.active > .burger__line:nth-child(3){
+.burger.active > .burger__line:nth-child(3) {
   transform: translateY(-9px) rotate(90deg);
 }
 
@@ -362,7 +386,7 @@ body {
 }
 
 @media (max-width: 1024px) {
-  .burger{
+  .burger {
     display: block;
   }
   .users {
@@ -383,7 +407,7 @@ body {
     transition: transform 0.6s ease-in-out;
   }
 
-  .sidebar--visible{
+  .sidebar--visible {
     transform: none;
   }
 }
@@ -395,15 +419,15 @@ body {
 }
 
 @media (max-width: 576px) {
-  .slogan span{
+  .slogan span {
     display: none;
   }
   .users__list {
     grid-template-columns: repeat(1, 1fr);
   }
 
-  .burger{
-    top: 15px;
-    left: 10px;
+  .burger {
+    top: 75px;
+    left: 30px;
   }
 }
