@@ -66,7 +66,7 @@ body {
   grid-column: 12 span;
 }
 
-.status-block{
+.status-block {
   margin: 0 auto;
   display: block;
 }
@@ -80,7 +80,7 @@ body {
 
 .header__inner {
   position: relative;
-  background-color: #7E7DB7;
+  background-color: #7e7db7;
   border-radius: 15px;
   width: 100%;
   text-align: center;
@@ -140,7 +140,7 @@ body {
   cursor: pointer;
 }
 
-.form__field--name{
+.form__field--name {
   margin-bottom: 20px;
 }
 
@@ -254,7 +254,7 @@ body {
 }
 
 .form__field--name::placeholder {
-  color: #B0BEC5;
+  color: #b0bec5;
 }
 
 .form__field--name:focus {
@@ -299,7 +299,7 @@ body {
 .burger {
   position: absolute;
   left: 35px;
-  top: 70px;
+  top: 35px;
   z-index: 30;
   display: none;
   width: 30px;
@@ -389,7 +389,11 @@ body {
 }
 
 @media (max-width: 576px) {
-  .slogan span {
+  .title {
+    font-size: 36px;
+    line-height: 42px;
+  }
+  .slogan {
     display: none;
   }
   .users__list {
