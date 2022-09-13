@@ -56,7 +56,7 @@ function showLoadingStatus() {
 
 function loadUsersData() {
   showLoadingStatus();
-  
+
   fetch(
     "https://randomuser.me/api/?results=20&nat=us,ua,de&inc=picture,name,dob,gender,location"
   )
@@ -68,14 +68,17 @@ function loadUsersData() {
       showCards(users);
       loadingMessage.remove();
     })
-    .catch(() => showErrorStauts());
+    .catch(() => {
+      loadingMessage.remove();
+      showErrorStauts();
+    });
 }
 
 function showErrorStauts() {
   const errorMessage = document.createElement("div");
   errorMessage.classList.add("error-block");
   errorMessage.innerHTML = `${statusMessage.failure}`;
-  
+
   console.log(statusMessage.failure);
   cardsList.append(errorMessage);
 }
@@ -113,7 +116,9 @@ function addGenderHeader(gender, card) {
 /////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////
 const compareByName = (firstUser, secondUser) =>
-  firstUser.name.first.toLowerCase() <= secondUser.name.first.toLowerCase() ? -1 : 1;
+  firstUser.name.first.toLowerCase() <= secondUser.name.first.toLowerCase()
+    ? -1
+    : 1;
 const compareByAge = (firstUser, secondUser) =>
   firstUser.dob.age - secondUser.dob.age;
 
