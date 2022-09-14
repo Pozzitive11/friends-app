@@ -10,43 +10,18 @@ const resetBtn = document.querySelector(".form__button");
 
 const burgerBtn = document.querySelector(".burger");
 const sidebar = document.querySelector(".sidebar");
-const wrapper = document.querySelector(".wrapper");
-
-function closeModal() {
-  modal.classList.add("hide");
-  modal.classList.remove("show");
-  // document.body.style.overflow = "";
-}
-
-function openModal() {
-  modal.classList.add("show");
-  modal.classList.remove("hide");
-  // document.body.style.overflow = "hidden";
-}
 
 burgerBtn.addEventListener("click", (e) => {
   burgerBtn.classList.toggle("active");
   sidebar.classList.toggle("sidebar--visible");
-
-  // if (e.target === wrapper) {
-  //   burgerBtn.classList.toggle("active");
-  //   // sidebar.classList.toggle("sidebar--visible");
-  // }
 });
-
-// wrapper.addEventListener("click", (e) => {
-//   if (e.target === wrapper) {
-//     console.log(123);
-//     closeModal();
-//   }
-// });
 
 const statusMessage = {
   loading: "img/spinner.svg",
   failure: "Technical problems, try again later",
 };
 
-let loadingMessage = document.createElement("img");
+const loadingMessage = document.createElement("img");
 function showLoadingStatus() {
   loadingMessage.src = statusMessage.loading;
   loadingMessage.classList.add("status-block");
@@ -70,11 +45,11 @@ function loadUsersData() {
     })
     .catch(() => {
       loadingMessage.remove();
-      showErrorStauts();
+      showErrorStautus();
     });
 }
 
-function showErrorStauts() {
+function showErrorStautus() {
   const errorMessage = document.createElement("div");
   errorMessage.classList.add("error-block");
   errorMessage.innerHTML = `${statusMessage.failure}`;
@@ -92,29 +67,19 @@ function showCards(cards) {
 function createCard({ picture, name, dob, gender, location }) {
   const userCard = document.createElement("li");
   userCard.classList.add("user__item");
-
+  let genderTemp;
+  if (gender === "male") genderTemp = "user__gender--male";
+  if (gender === "female") genderTemp = "user__gender--female";
   userCard.innerHTML = `
+    <h4 class="user__gender ${genderTemp}">${gender}</h4>
     <img class="user__img" src="${picture.large}" alt="User photo" />
     <p class="user__name">${name.first} ${name.last}</p>
     <p class="user__age">Age: <span class="user__age-span">${dob.age}</span></p>
     <p class="user__location">${location.country}</p>`;
 
-  addGenderHeader(gender, userCard);
   cardsList.append(userCard);
 }
 
-function addGenderHeader(gender, card) {
-  const friendGender = document.createElement("div");
-  if (gender === "male") {
-    friendGender.innerHTML = `<h4 class="user__gender user__gender--male">${gender}</h4>`;
-  } else {
-    friendGender.innerHTML = `<h4 class="user__gender user__gender--female">${gender}</h4>`;
-  }
-  card.prepend(friendGender);
-}
-
-/////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
 const compareByName = (firstUser, secondUser) =>
   firstUser.name.first.toLowerCase() <= secondUser.name.first.toLowerCase()
     ? -1
@@ -124,16 +89,13 @@ const compareByAge = (firstUser, secondUser) =>
 
 const compareByGender = (user, type) => user.gender === type;
 
-/////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
 function filterBySearch(arr, target) {
   return arr.filter((user) => {
-    const fullName = `${user.name.first} ${user.name.last}`;
-    return fullName.toLowerCase().includes(target.toLowerCase());
+    const fullName = `${user.name.first} ${user.name.last}`.toLowerCase();
+    return fullName.includes(target.toLowerCase());
   });
 }
-/////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////
+
 function filterUsers({ target }) {
   let resultUsers = [...users];
   if (searchInput.value !== "") {
