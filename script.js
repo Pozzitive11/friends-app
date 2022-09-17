@@ -2,7 +2,6 @@ let users = [];
 const cardsList = document.querySelector(".users__list");
 const form = document.querySelector(".form");
 
-const searchInput = document.querySelector("#search-input");
 const resetButton = document.querySelector(".form__button");
 
 const burgerButton = document.querySelector(".burger");
@@ -87,16 +86,11 @@ function filterByName(names, target) {
 
 function handleUsers({ target }) {
   let resultUsers = [...users];
-  if (searchInput.value !== "") {
-    resultUsers = filterByName(resultUsers, searchInput.value);
+  if (form.search.value !== "") {
+    resultUsers = filterByName(resultUsers, form.search.value);
   }
 
-  resultUsers =
-    form.gender.value === "male" || form.gender.value === "female"
-      ? resultUsers.filter((user) => user.gender === form.gender.value)
-      : resultUsers;
-
-  switch (target.value) {
+  switch (form.sort.value) {
     case "age-up":
       resultUsers.sort((a, b) => compareByAge(b, a));
       break;
@@ -112,6 +106,11 @@ function handleUsers({ target }) {
     default:
       break;
   }
+
+  resultUsers =
+    form.gender.value === "male" || form.gender.value === "female"
+      ? resultUsers.filter((user) => user.gender === form.gender.value)
+      : resultUsers;
 
   createCards(resultUsers);
 }
