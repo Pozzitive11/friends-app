@@ -54,7 +54,7 @@ body {
   display: block;
 }
 
-.hidden{
+.hidden {
   overflow: hidden;
 }
 
@@ -101,6 +101,8 @@ body {
 /* Sidebar */
 
 .sidebar {
+  position: sticky;
+  top: 40px;
   background-color: #6867ac;
   border-radius: 15px;
   padding: 20px;

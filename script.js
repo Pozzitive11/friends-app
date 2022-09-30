@@ -2,6 +2,7 @@ let users = [];
 let resultUsers;
 const cardsList = document.querySelector(".users__list");
 const form = document.querySelector(".form");
+const header = document.querySelector(".header");
 
 const resetButton = document.querySelector(".form__button");
 
