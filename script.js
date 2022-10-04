@@ -77,7 +77,7 @@ function createCards(cards) {
     )
     .join("");
 }
-
+let ifGender = false;
 const compareByName = (firstUser, secondUser) =>
   firstUser.name.first.toLowerCase() <= secondUser.name.first.toLowerCase()
     ? -1
@@ -113,11 +113,14 @@ function filterUsers() {
       break;
   }
 
-  resultUsers =
-    form.gender.value === "male" || form.gender.value === "female"
-      ? resultUsers.filter((user) => user.gender === form.gender.value)
-      : resultUsers;
-
+  if (form.gender.value === "male" || form.gender.value === "female") {
+    resultUsers = resultUsers.filter(
+      (user) => user.gender === form.gender.value
+    );
+    ifGender = true;
+  } else {
+    resultUsers;
+  }
   createPaginationList(resultUsers);
   resultUsers = returnSelectedPage(resultUsers);
 }
@@ -165,6 +168,9 @@ function returnSelectedPage(friendsCopy) {
   const sliceStart = userPerPageNum * (selectedPage - 1);
   const sliceEnd = userPerPageNum + sliceStart;
   const slicedUsersArr = friendsCopy.slice(sliceStart, sliceEnd);
+  if (ifGender) {
+    selectedPage = 1;
+  }
   createCards(slicedUsersArr);
   return slicedUsersArr;
 }
