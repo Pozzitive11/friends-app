@@ -344,16 +344,17 @@ body {
 
 /* PAGINATION */
 
-.pagination-container {
-  /* display: none; */
+.pagination-list {
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 16px 0;
 }
 
-.pagination-number,
-.pagination-button{
+.pagination-number{
+  display: flex;
+  align-items: center;
+  justify-content: center;
   font-size: 16px;
   background-color: transparent;
   border: none;
@@ -362,6 +363,7 @@ body {
   height: 2.5rem;
   width: 2.5rem;
   border-radius: .2rem;
+  text-decoration: none;
 }
 
 .pagination-number:hover,

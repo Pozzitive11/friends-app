@@ -11,14 +11,7 @@ const resetButton = document.querySelector(".form__button");
 const burgerButton = document.querySelector(".burger");
 const sidebar = document.querySelector(".sidebar");
 
-const paginationContainer = document.querySelector(".pagination-container");
-const paginationNumbers = document.querySelector(".pagination-numbers");
-const listItems = cardsList.querySelectorAll("li");
-const nextButton = document.querySelector("#next-button");
-const prevButton = document.querySelector("#prev-button");
-const paginationLimit = 20;
-const pageCount = Math.ceil(numberOfUsers / paginationLimit);
-let currentPage = 1;
+const paginationList = document.querySelector(".pagination-list");
 
 burgerButton.addEventListener("click", () => {
   burgerButton.classList.toggle("active");
@@ -50,7 +43,8 @@ function loadUsersData() {
     })
     .then((responseJson) => {
       users = responseJson.results;
-      createCards(users);
+      createCards(returnSelectedPage(users));
+      createPaginationList(users);
     })
     .catch(() => {
       showErrorStautus();
@@ -71,7 +65,6 @@ function showErrorStautus() {
 function createCards(cards) {
   cardsList.innerHTML = "";
   cardsList.innerHTML = cards
-    .slice(0, paginationLimit)
     .map(
       ({ picture, name, dob, gender, location }) =>
         `<li class="user__item">
@@ -125,113 +118,71 @@ function filterUsers() {
       ? resultUsers.filter((user) => user.gender === form.gender.value)
       : resultUsers;
 
-  return resultUsers;    
+  createPaginationList(resultUsers);
+  resultUsers = returnSelectedPage(resultUsers);
 }
 
 function resetFilters() {
   resultUsers = [...users];
-  createCards(resultUsers);
+  createPaginationList(resultUsers);
+  resultUsers = returnSelectedPage(resultUsers);
 }
 
-// ==========================================
-// ==========================================
-// ==========================================
+const userPerPageNum = 20;
+let selectedPage = 1;
+let pageNum;
 
-const disableButton = (button) => {
-  button.classList.add("disabled");
-  button.setAttribute("disabled", true);
-};
-
-const enableButton = (button) => {
-  button.classList.remove("disabled");
-  button.removeAttribute("disabled");
-};
-
-const handlePageButtonsStatus = () => {
-  if (currentPage === 1) {
-    disableButton(prevButton);
+function countPages(friendsCopy) {
+  if (Number.isInteger(friendsCopy.length / userPerPageNum)) {
+    pageNum = friendsCopy.length / userPerPageNum;
   } else {
-    enableButton(prevButton);
+    pageNum = Math.round(friendsCopy.length / userPerPageNum);
   }
+}
 
-  if (pageCount === currentPage) {
-    disableButton(nextButton);
-  } else {
-    enableButton(nextButton);
-  }
-};
+function createPaginationList(friendsCopy) {
+  countPages(friendsCopy);
 
-const handleActivePageNumber = () => {
-  document.querySelectorAll(".pagination-number").forEach((button) => {
-    button.classList.remove("active");
-    const pageIndex = Number(button.getAttribute("page-index"));
-    if (pageIndex == currentPage) {
-      button.classList.add("active");
+  paginationList.innerHTML = "";
+  for (let i = 1; i <= pageNum; i++) {
+    const paginationListElem = document.createElement("LI");
+    const paginationLink = document.createElement("A");
+    paginationLink.classList.add("pagination-number");
+    paginationLink.setAttribute("href", "#");
+    paginationLink.dataset.pageNum = i;
+    paginationLink.innerHTML = i;
+
+    if (i == selectedPage) {
+      paginationListElem.classList.add("selected-page");
     }
-  });
-};
 
-const appendPageNumber = (index) => {
-  const pageNumber = document.createElement("button");
-  pageNumber.className = "pagination-number";
-  pageNumber.innerHTML = index;
-  pageNumber.setAttribute("page-index", index);
-  pageNumber.setAttribute("aria-label", "Page " + index);
-
-  paginationNumbers.appendChild(pageNumber);
-};
-
-const getPaginationNumbers = () => {
-  for (let i = 1; i <= pageCount; i++) {
-    appendPageNumber(i);
+    paginationList.appendChild(paginationListElem);
+    paginationListElem.appendChild(paginationLink);
   }
-};
-const setCurrentPage = (pageNum = 1) => {
-  resultUsers = [...users];
-  currentPage = pageNum;
+}
 
-  handleActivePageNumber();
-  handlePageButtonsStatus();
-
-  const prevRange = (pageNum - 1) * paginationLimit;
-  const currRange = pageNum * paginationLimit;
-
-  currentUsers = [];
-  resultUsers.forEach((item, index) => {
-    if (index >= prevRange && index < currRange) {
-      currentUsers.push(item);
-    }
-  });
-  createCards(currentUsers);
-};
+function returnSelectedPage(friendsCopy) {
+  const sliceStart = userPerPageNum * (selectedPage - 1);
+  const sliceEnd = userPerPageNum + sliceStart;
+  const slicedUsersArr = friendsCopy.slice(sliceStart, sliceEnd);
+  createCards(slicedUsersArr);
+  return slicedUsersArr;
+}
 
 document.addEventListener("DOMContentLoaded", function () {
   loadUsersData();
-
-  getPaginationNumbers();
-  setCurrentPage(1);
-
-  prevButton.addEventListener("click", () => {
-    setCurrentPage(currentPage - 1);
-  });
-
-  nextButton.addEventListener("click", () => {
-    setCurrentPage(currentPage + 1);
-  });
-
-  document.querySelectorAll(".pagination-number").forEach((button) => {
-    const pageIndex = Number(button.getAttribute("page-index"));
-
-    if (pageIndex) {
-      button.addEventListener("click", () => {
-        setCurrentPage(pageIndex);
-      });
-    }
-  });
 
   form.addEventListener("input", (e) => {
     filterUsers();
     createCards(resultUsers);
   });
   resetButton.addEventListener("click", resetFilters);
+});
+
+paginationList.addEventListener("click", ({ target }) => {
+  resultUsers = [...users];
+  if (target.tagName === "A") {
+    selectedPage = target.dataset.pageNum;
+  }
+  filterUsers();
 });
