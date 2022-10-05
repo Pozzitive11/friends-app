@@ -149,8 +149,8 @@ function createPaginationList(friendsCopy) {
   paginationList.innerHTML = "";
   for (let i = 1; i <= pageNum; i++) {
     const paginationListElem = document.createElement("LI");
+    paginationListElem.classList.add("pagination-number");
     const paginationLink = document.createElement("A");
-    paginationLink.classList.add("pagination-number");
     paginationLink.setAttribute("href", "#");
     paginationLink.dataset.pageNum = i;
     paginationLink.innerHTML = i;
