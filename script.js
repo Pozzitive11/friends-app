@@ -150,17 +150,14 @@ function createPaginationList(friendsCopy) {
   for (let i = 1; i <= pageNum; i++) {
     const paginationListElem = document.createElement("LI");
     paginationListElem.classList.add("pagination-number");
-    const paginationLink = document.createElement("A");
-    paginationLink.setAttribute("href", "#");
-    paginationLink.dataset.pageNum = i;
-    paginationLink.innerHTML = i;
+    paginationListElem.dataset.pageNum = i;
+    paginationListElem.innerHTML = i;
 
     if (i == selectedPage) {
       paginationListElem.classList.add("selected-page");
     }
 
     paginationList.appendChild(paginationListElem);
-    paginationListElem.appendChild(paginationLink);
   }
 }
 
@@ -187,8 +184,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 paginationList.addEventListener("click", ({ target }) => {
   resultUsers = [...users];
-  if (target.tagName === "A") {
-    selectedPage = target.dataset.pageNum;
-  }
+  selectedPage = target.dataset.pageNum;
+  console.log(target);
   filterUsers();
 });

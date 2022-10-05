@@ -376,9 +376,6 @@ body {
 
 .selected-page {
   background-color: #490047;
-}
-
-.selected-page > a {
   color: #fff;
 }
 
